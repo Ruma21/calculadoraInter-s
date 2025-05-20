@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Interés Compuesto</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            min-height: 100vh;
+            width: 100vw;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: transparent !important;  /* Fondo transparente */
+            color: #F8FAFC;
+        }
+
+        .calculator-container {
+            background: transparent !important;
+            border-radius: 0;
+            box-shadow: none;
+            width: 100vw !important;
+            max-width: 100vw !important;
+            padding: 0 !important;
+        }
+        .form-input, .form-select {
+            background-color: #FFFFFF;
+            border: 1px solid #D1D5DB;
+            color: #1F2937;
+            border-radius: 25px !important; /* Cambiado a 25px */
+            padding: 0.75rem 1rem;          /* Menos alto */
+            font-size: 1.5rem;
+            font-weight: 500;
+            text-align: center;
+            transition: all 0.3s ease;
+            height: 50px;                   /* Ajustar altura máxima */
+        }
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #31A9E1;
+            box-shadow: 0 0 0 3px rgba(49, 169, 225, 0.3);
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #31A9E1;
+            text-align: center;
+        }
+        .btn-calculate {
+            background-color: #0d467f;
+            color: white;
+            font-weight: 600;
+            padding: 0.9rem 2rem;
+            border-radius: 25px !important; /* Cambiado a 25px */
+            font-size: 1.25rem;
+            margin: auto;
+            display: block;
+            box-shadow: 0 4px 16px 0 rgba(0,0,0,0.10), 0 1.5px 4px 0 rgba(0,0,0,0.06);
+            transition: background 0.2s;
+        }
+        .btn-calculate:hover {
+            background-color: #0b3a6a;
+        }
+        .result-box {
+            background-color: #0d467f;
+            border-radius: 1.5rem;
+            padding: 2.5rem 2rem 1rem 2rem;
+            margin-top: 1.5rem;
+            text-align: center;
+            max-width: 540px;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #titleResult{
+            color: #31A9E1;
+        }
+        .result-box .result-label {
+            color: #FFFFFF;
+        }
+        .result-note {
+            font-size: 0.95rem;
+            color: #cbd5e1;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            width: 100%;
+        }
+        .input-number-no-spinners::-webkit-outer-spin-button,
+        .input-number-no-spinners::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .input-number-no-spinners {
+            -moz-appearance: textfield;
+        }
+        .error-message {
+            color: #F87171;
+            font-size: 0.95rem;
+            margin-top: 0.15rem;
+            height: 1.2rem;
+            text-align: center;
+        }
+        @media (max-width: 767px) {
+            .input-grid {
+                grid-template-columns: 1fr !important;
+                gap: 1.25rem !important;
+            }
+            .result-box {
+                max-width: 100vw;
+                padding: 1.5rem 0.5rem 1rem 0.5rem;
+            }
+        }
+        .form-input {
+    /* ...todo igual */
+    padding-left: 2.4rem !important; /* Asegura espacio al símbolo */
+}
+
+    </style>
+</head>
+<body class="min-h-screen w-screen flex flex-col items-center justify-center">
+
+    <div class="calculator-container flex flex-col items-center justify-center h-full w-full">
+        <h1 class="text-2xl md:text-3xl font-bold text-center mb-6 md:mb-8" style="color: #fff;">Simula tu Inversión</h1>
+
+        <div class="grid input-grid grid-cols-1 md:grid-cols-3 gap-8 mb-6 w-full max-w-5xl px-2 md:px-20">
+            <div class="flex flex-col items-center w-full">
+                <label for="initialInvestment">Inversión Inicial</label>
+                <div class="relative w-full flex items-center">
+                    <span class="absolute left-4 text-xl font-bold text-slate-500 pointer-events-none select-none">$</span>
+                    <input
+                        type="number"
+                        id="initialInvestment"
+                        value="500"
+                        min="500"
+                        step="100"
+                        class="form-input w-full pl-10 input-number-no-spinners"
+                    >
+                </div>
+                <div id="initialInvestmentError" class="error-message"></div>
+            </div>
+
+            <div class="flex flex-col items-center">
+                <label for="interestRate">Tasa de Rendimiento</label>
+                <select id="interestRate" class="form-select w-full">
+                    <option value="3">3.0 %</option>
+                    <option value="6">6.0 %</option>
+                    <option value="9">9.0 %</option>
+                </select>
+            </div>
+
+            <div class="flex flex-col items-center w-full">
+                <label for="investmentTerm">Plazo de Inversión</label>
+                <div class="flex w-full items-center bg-white border border-gray-300" style="border-radius:25px;">
+                    <input
+                        type="number"
+                        id="investmentTerm"
+                        value="12"
+                        min="1"
+                        max="24"
+                        step="1"
+                        class="form-input flex-1 border-none shadow-none outline-none bg-transparent text-center input-number-no-spinners"
+                        style="border-radius:25px; padding-right:0.5rem;"
+                    >
+                    <span class="ml-1 mr-4 text-base md:text-lg text-slate-500 font-bold select-none">meses</span>
+                </div>
+                <div id="investmentTermError" class="error-message"></div>
+            </div>
+
+        </div>
+
+        <div class="text-center mb-6 w-full">
+            <button id="calculateButton" class="btn-calculate">CALCULAR</button>
+        </div>
+        
+        <div id="resultContainer" class="result-box hidden">
+            <p class="text-lg font-medium text-slate-100 mb-1 result-label" id="titleResult">Monto total:</p>
+            <p id="totalAmount" class="text-3xl md:text-4xl font-bold text-white">$0.00</p>
+            <span class="result-note">* Cifras aproximadas en dólares, sujetas a los rendimientos que genere cada estrategia. Rendimientos pasados no garantizan rendimientos futuros.</span>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const initialInvestmentInput = document.getElementById('initialInvestment');
+        const interestRateSelect = document.getElementById('interestRate');
+        const investmentTermInput = document.getElementById('investmentTerm');
+        const calculateButton = document.getElementById('calculateButton');
+        const resultContainer = document.getElementById('resultContainer');
+        const totalAmountDisplay = document.getElementById('totalAmount');
+        const initialInvestmentError = document.getElementById('initialInvestmentError');
+        const investmentTermError = document.getElementById('investmentTermError');
+
+        // Minimum investment amounts based on rate
+        const minInvestmentByRate = {
+            3: 500,
+            6: 1000,
+            9: 2500
+        };
+
+        // Function to update initial investment constraints based on selected rate
+        function updateInvestmentConstraints() {
+            const rate = parseFloat(interestRateSelect.value);
+            const currentMinInvestment = minInvestmentByRate[rate];
+            
+            initialInvestmentInput.min = currentMinInvestment;
+            
+            // If current investment is less than new min, update it
+            if (parseFloat(initialInvestmentInput.value) < currentMinInvestment) {
+                initialInvestmentInput.value = currentMinInvestment;
+            }
+            // Also, ensure the value is a multiple of 100 if it's not already the minimum
+            let currentVal = parseFloat(initialInvestmentInput.value);
+            if (currentVal % 100 !== 0 && currentVal > currentMinInvestment) {
+                 initialInvestmentInput.value = Math.ceil(currentVal / 100) * 100;
+            } else if (currentVal < currentMinInvestment) {
+                 initialInvestmentInput.value = currentMinInvestment;
+            }
+
+            validateInputs(); // Re-validate after changing constraints
+        }
+
+        // Function to validate inputs and update UI constraints
+        function validateInputs() {
+            let isValid = true;
+            const rate = parseFloat(interestRateSelect.value);
+            let term = parseInt(investmentTermInput.value);
+            const investment = parseFloat(initialInvestmentInput.value);
+            const currentMinInvestment = minInvestmentByRate[rate];
+
+            // Validate Initial Investment
+            initialInvestmentError.textContent = '';
+            if (isNaN(investment) || investment < currentMinInvestment || investment % 100 !== 0) {
+                initialInvestmentError.textContent = `Mínimo $${currentMinInvestment.toLocaleString('en-US')}, en múltiplos de 100.`;
+                isValid = false;
+            }
+            
+            // Validate and adjust Investment Term based on Interest Rate
+            investmentTermError.textContent = '';
+            if (rate === 9) {
+                if (term !== 24) {
+                    investmentTermInput.value = 24; 
+                    term = 24;
+                }
+                investmentTermInput.readOnly = true; 
+                investmentTermInput.classList.add('bg-slate-300', 'cursor-not-allowed', 'text-slate-500');
+                investmentTermInput.classList.remove('bg-slate-600');
+            } else {
+                investmentTermInput.readOnly = false;
+                investmentTermInput.classList.remove('bg-slate-300', 'cursor-not-allowed', 'text-slate-500', 'bg-slate-600');
+                if (isNaN(term) || term < 1 || term > 24) {
+                    investmentTermError.textContent = 'Debe ser entre 1 y 24 meses.';
+                    isValid = false;
+                }
+            }
+            return isValid;
+        }
+
+        // Function to calculate compound interest
+        function calculateCompoundInterest() {
+            if (!validateInputs()) {
+                resultContainer.classList.add('hidden'); 
+                return;
+            }
+
+            const principal = parseFloat(initialInvestmentInput.value);
+            const monthlyInterestRate = parseFloat(interestRateSelect.value) / 100;
+            const months = parseInt(investmentTermInput.value);
+            const totalAmount = principal * Math.pow((1 + monthlyInterestRate), months);
+
+            totalAmountDisplay.textContent = `$${totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            resultContainer.classList.remove('hidden');
+        }
+
+        // Event Listeners
+        initialInvestmentInput.addEventListener('input', () => {
+            validateInputs();
+            resultContainer.classList.add('hidden'); 
+        });
+
+        interestRateSelect.addEventListener('change', () => {
+            updateInvestmentConstraints();
+            resultContainer.classList.add('hidden');
+        });
+
+        investmentTermInput.addEventListener('input', () => {
+            validateInputs();
+            resultContainer.classList.add('hidden');
+        });
+
+        calculateButton.addEventListener('click', calculateCompoundInterest);
+
+        // Initial setup call
+        updateInvestmentConstraints();
+    </script>
+
+</body>
+</html>
