@@ -164,27 +164,53 @@
                 <div id="initialInvestmentError" class="error-message"></div>
             </div>
 
-            <div class="flex flex-col items-center">
-                <label for="interestRate">Tasa de Rendimiento</label>
-                <select id="interestRate" class="form-select w-full">
-                    <option value="3">3.0 %</option>
-                    <option value="6">6.0 %</option>
-                    <option value="9">9.0 %</option>
-                </select>
+            <div class="flex flex-col items-center w-full">
+                <label for="interestRate" class="flex items-center justify-center gap-2">
+                Tasa de Rendimiento
+                <span class="relative group cursor-pointer select-none">
+                    <!-- Círculo con borde y letra azul, fondo transparente -->
+                    <span class="inline-flex items-center justify-center w-6 h-6 rounded-full border-2 border-[#31A9E1] text-[#31A9E1] bg-transparent text-sm font-bold transition">
+                    i
+                    </span>
+                    <!-- Tooltip igual que antes -->
+                    <span class="absolute left-1/2 z-20 -translate-x-1/2 mt-2 w-56 rounded-lg bg-slate-800 text-slate-100 px-4 py-2 text-xs shadow-lg opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 transition-opacity duration-200"
+                        style="top:100%;">
+                    La tasa de rendimiento es el porcentaje mensual de ganancia estimada sobre tu inversión inicial. Selecciona una tasa según tu estrategia y perfil de riesgo.
+                    </span>
+                </span>
+                </label>
+
+            <select id="interestRate" class="form-select w-full">
+                <option value="3">3%</option>
+                <option value="6">6%</option>
+                <option value="9">9%</option>
+            </select>
             </div>
 
+
             <div class="flex flex-col items-center w-full">
-                <label for="investmentTerm">Plazo de Inversión</label>
+                <label for="investmentTerm" class="flex items-center justify-center gap-2">
+                    Plazo de Inversión
+                    <span class="relative group cursor-pointer select-none">
+                    <span class="inline-flex items-center justify-center w-6 h-6 rounded-full border-2 border-[#31A9E1] text-[#31A9E1] bg-transparent text-sm font-bold transition">
+                        i
+                    </span>
+                    <span class="absolute left-1/2 z-20 -translate-x-1/2 mt-2 w-60 rounded-lg bg-slate-800 text-slate-100 px-4 py-2 text-xs shadow-lg opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 transition-opacity duration-200"
+                            style="top:100%;">
+                        El plazo de inversión es el número de meses que tu dinero permanecerá invertido. Entre mayor el plazo, mayor podría ser la ganancia total estimada.
+                    </span>
+                    </span>
+                </label>
                 <div class="flex w-full items-center bg-white border border-gray-300" style="border-radius:25px;">
                     <input
-                        type="number"
-                        id="investmentTerm"
-                        value="12"
-                        min="1"
-                        max="24"
-                        step="1"
-                        class="form-input flex-1 border-none shadow-none outline-none bg-transparent text-center input-number-no-spinners"
-                        style="border-radius:25px; padding-right:0.5rem;"
+                    type="number"
+                    id="investmentTerm"
+                    value="12"
+                    min="1"
+                    max="24"
+                    step="1"
+                    class="form-input flex-1 border-none shadow-none outline-none bg-transparent text-center input-number-no-spinners"
+                    style="border-radius:25px; padding-right:0.5rem;"
                     >
                     <span class="ml-1 mr-4 text-base md:text-lg text-slate-500 font-bold select-none">meses</span>
                 </div>
